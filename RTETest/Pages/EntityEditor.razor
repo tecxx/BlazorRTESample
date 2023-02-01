@@ -1,0 +1,22 @@
+﻿@using RTETest.Model;
+@using Radzen.Blazor
+<h3>EntityEditor</h3>
+
+@if (Entity == null)
+{
+    <div>Null Entity</div>   
+}
+else
+{
+    <RadzenTextBox @bind-Value=@Entity.name />
+
+    <RadzenText TextStyle="TextStyle.Overline" Class="d-flex mt-1 mb-0">Details:</RadzenText>
+    <RadzenHtmlEditor class="c-cms-content" @bind-Value="@Entity.rtecontent" Style="min-height:150px;white-space: break-spaces;resize: vertical;overflow: auto;" />
+
+    <RadzenText TextStyle="TextStyle.Overline" Class="d-flex mt-1 mb-0">Tasks:</RadzenText>
+    <MetaTasksEditor Entity="@Entity" />
+}
+
+@code {
+    [Parameter] public Entity Entity { get; set; } = default!;
+}

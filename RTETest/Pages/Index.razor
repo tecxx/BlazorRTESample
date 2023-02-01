@@ -1,0 +1,37 @@
+﻿@page "/"
+@using RTETest.Model;
+@using Radzen.Blazor
+@using Radzen;
+
+
+<RadzenSplitter Orientation="Orientation.Horizontal">
+        <RadzenSplitterPane Size="25%" Min="200px" Max="70%">
+            <div class="h-full flex flex-col overflow-y-auto">
+                <AdminTree2 TreeSelectionChanged=@OnTreeNodeSelectionChanged />
+            </div>
+        </RadzenSplitterPane>
+        <RadzenSplitterPane>
+            <div class="h-full flex flex-col overflow-y-auto pl-1 pr-2 mb-2">
+                <EntityEditor Entity="selectedEntity"/>
+            </div>
+    </RadzenSplitterPane>
+</RadzenSplitter>
+
+
+
+@code {
+    Entity? selectedEntity { get; set; } = null;
+
+    async void OnTreeNodeSelectionChanged(TreeNodeSelectionParams? p)
+    {
+        if (p == null)
+        {
+            selectedEntity = null;
+        }
+        else if (p.Entity is Entity e)
+        {
+            selectedEntity = e;
+        }
+        StateHasChanged();
+    }
+}

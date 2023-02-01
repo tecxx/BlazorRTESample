@@ -1,0 +1,75 @@
+﻿@using RTETest.Model;
+@using Radzen.Blazor
+@using Radzen;
+
+@inject DataService DataService
+
+<RadzenTree Data="@treeDataSource" Change="@OnTreeSelectionChange"
+                Style="min-width: 250px; height: 100%;font-size: 0.8rem;">
+
+    <RadzenTreeLevel TextProperty="name" ChildrenProperty="Children" HasChildren="QueryNodeHasChildren">
+        <Template Context="data">
+                @{
+                    var node = data.Value as TreeNode;
+                    if (node == null)
+                        return;
+                }
+                <div class="flex m-px w-full" style="border: black solid 0px;">
+                    <div class="w-full break-normal" style="min-width:50px;">
+                        @(node.name)
+                    </div>
+                </div>
+                
+
+        </Template>
+    </RadzenTreeLevel>
+</RadzenTree>
+
+
+@code {
+    [Parameter] public EventCallback<TreeNodeSelectionParams> TreeSelectionChanged { get; set; } = default!;
+    List<TreeNode> treeDataSource = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await DataService.GetData();
+        var rootNodes = RunFolders(data);
+        treeDataSource = new List<TreeNode>();
+        treeDataSource.AddRange(rootNodes);
+    }
+
+    List<TreeNode> RunFolders(List<Entity> entities)
+    {
+        List<TreeNode> results = new();
+
+        foreach (var e in entities)
+        {
+            TreeNode node = TreeNode.FromDB(e);
+            results.Add(node);
+        }
+
+        return results;
+    }
+    
+    bool QueryNodeHasChildren(object o)
+    {
+        return false;
+    }
+
+    #region NODE SELECTED
+    async Task OnTreeSelectionChange(TreeEventArgs args)
+    {
+        if (args.Value is not TreeNode node)
+            return;
+
+        if (node.Entity != null)
+        {
+            var p = new TreeNodeSelectionParams(node.Entity);
+            await TreeSelectionChanged.InvokeAsync(p);
+        }
+    }
+    #endregion
+
+    
+}

@@ -1,0 +1,26 @@
+﻿@using RTETest.Model;
+@using Radzen.Blazor
+
+<div class="align-items-center d-flex">
+    <RadzenDataList Data="@Entity.MetaTasks?.OrderBy(x => x.position)" TItem="MetaTask" WrapItems="true" Style="width:100%;">
+        <Template Context="task">
+            <RadzenCard>
+
+                <div>
+                    <RadzenLabel Text="@task.name"/>
+                </div>
+
+                <div>
+                    <RadzenText TextStyle="TextStyle.Overline" Class="d-flex mt-1 mb-0">Description:</RadzenText>
+                    <RadzenHtmlEditor class="c-cms-content" @bind-Value="@task.description" Style="min-height:150px;white-space: break-spaces;resize: vertical;overflow: auto;" />
+                </div>
+
+            </RadzenCard>
+        </Template>
+    </RadzenDataList>
+</div>
+
+@code {
+    [Parameter] public Entity Entity { get; set; } = default!;
+
+}
